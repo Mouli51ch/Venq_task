@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -23,6 +23,41 @@ import {
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
+// Custom scrollbar hiding utility
+const scrollbarHideStyles = `
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+  
+  /* Thin scrollbar styling for when minimal scrollbars are needed */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+  }
+  
+  /* Touch-friendly scrolling for mobile */
+  @media (pointer: coarse) {
+    .touch-scroll {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+  }
+`
+
 export default function VenqDashboard() {
   const [username, setUsername] = useState("Sakshamm")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -41,7 +76,7 @@ export default function VenqDashboard() {
         </Button>
       </div>
 
-      <div className="p-2 text-xs text-gray-400 overflow-y-auto">
+      <div className="p-2 text-xs text-gray-400 overflow-y-auto scrollbar-hide">
         <div className="mb-4">
           <p className="px-2 py-1 uppercase font-semibold text-[10px]">General</p>
           <Link href="#" className="flex items-center px-2 py-2 rounded-md hover:bg-gray-800">
@@ -152,6 +187,54 @@ export default function VenqDashboard() {
     </div>
   )
 
+  // CSS for hiding scrollbars across browsers
+  const scrollbarHideStyles = `
+    .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;  /* Chrome, Safari and Opera */
+    }
+    
+    /* Thin scrollbar styling for when minimal scrollbars are needed */
+    .scrollbar-thin {
+      scrollbar-width: thin;
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+    }
+    
+    /* Touch-friendly scrolling for mobile */
+    @media (pointer: coarse) {
+      .touch-scroll {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+      }
+    }
+  `
+
+  // Add scrollbar hiding styles to document
+  useEffect(() => {
+    // Create style element
+    const styleEl = document.createElement("style")
+    styleEl.innerHTML = scrollbarHideStyles
+    document.head.appendChild(styleEl)
+
+    // Cleanup on unmount
+    return () => {
+      document.head.removeChild(styleEl)
+    }
+  }, [])
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       {/* Mobile Header */}
@@ -175,7 +258,7 @@ export default function VenqDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex-1 flex flex-col overflow-auto scrollbar-hide">
         {/* KYC Banner */}
         <div className="w-full px-4 py-4 md:py-5">
           <div className="bg-black text-white p-3 md:p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 rounded-xl">
@@ -187,7 +270,7 @@ export default function VenqDashboard() {
         </div>
 
         {/* Main Dashboard */}
-        <div className="p-4 md:p-6 overflow-y-auto">
+        <div className="p-4 md:p-6 overflow-y-auto scrollbar-hide">
           <div className="mb-6 md:mb-8">
             <h2 className="text-lg md:text-xl">
               Hey, <span className="text-emerald-500">{username}!</span>
@@ -275,7 +358,7 @@ export default function VenqDashboard() {
       </div>
 
       {/* Desktop Right Sidebar */}
-      <div className="hidden md:block md:w-[250px] bg-gray-100 p-4 border-l border-gray-200 overflow-y-auto">
+      <div className="hidden md:block md:w-[250px] bg-gray-100 p-4 border-l border-gray-200 overflow-y-auto scrollbar-hide">
         <ConnectNowSection />
       </div>
     </div>
